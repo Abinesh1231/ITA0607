@@ -1,0 +1,15 @@
+import numpy as np
+# Input values
+x = np.array([-5, -2, 0, 2, 5])
+# Apply Sigmoid activation function
+sigmoid_output = 1 / (1 + np.exp(-x))
+print("Input Values:")
+print(x)
+print("\nSigmoid Output:")
+print(sigmoid_output)
+OUTPUT:
+   Input Values:
+[-5 -2  0  2  5]
+
+Sigmoid Output:
+[0.00669285 0.11920292 0.5        0.88079708 0.99330715]
