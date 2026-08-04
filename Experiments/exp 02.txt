@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+
+# Training data
+data = pd.DataFrame({
+    "Sky": ["Sunny", "Sunny", "Rainy", "Sunny"],
+    "AirTemp": ["Warm", "Warm", "Cold", "Warm"],
+    "Humidity": ["Normal", "High", "High", "High"],
+    "Wind": ["Strong", "Strong", "Strong", "Strong"],
+    "Water": ["Warm", "Warm", "Warm", "Cool"],
+    "Forecast": ["Same", "Same", "Change", "Change"],
+    "EnjoySport": ["Yes", "Yes", "No", "Yes"]
+})
+
+print("Training Data:")
+print(data)
+
+# Separate attributes and target
+attributes = np.array(data.iloc[:, :-1])
+target = np.array(data.iloc[:, -1])
+
+# Initialize Specific Hypothesis
+specific_h = attributes[0].copy()
+
+# Initialize General Hypothesis
+general_h = [["?" for _ in range(len(specific_h))]
+             for _ in range(len(specific_h))]
+
+print("\nInitial Specific Hypothesis:")
+print(specific_h)
+
+print("\nInitial General Hypothesis:")
+print(general_h)
+
+# Candidate Elimination Algorithm
+for i, instance in enumerate(attributes):
+
+    if target[i].lower() == "yes":
+        for j in range(len(specific_h)):
+            if instance[j] != specific_h[j]:
+                specific_h[j] = "?"
+                general_h[j][j] = "?"
+
+    elif target[i].lower() == "no":
+        for j in range(len(specific_h)):
+            if instance[j] != specific_h[j]:
+                general_h[j][j] = specific_h[j]
+            else:
+                general_h[j][j] = "?"
+
+    print("\nStep", i + 1)
+    print("Specific Hypothesis:", specific_h)
+    print("General Hypothesis:", general_h)
+
+# Remove fully general hypotheses
+general_h = [h for h in general_h if h != ["?" for _ in range(len(specific_h))]]
+
+print("\nFinal Specific Hypothesis:")
+print(specific_h)
+
+print("\nFinal General Hypothesis:")
+print(general_h)
