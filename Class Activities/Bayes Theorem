@@ -1,0 +1,42 @@
+print("1. BAYES THEOREM")
+print("-" * 50)
+
+# Imagine 100 people take a disease test
+total_people = 100
+
+# 10 people actually have the disease
+diseased_people = 10
+
+# Among the 10 diseased people, 9 test positive
+sick_and_positive = 9
+
+# Among the 90 healthy people, 9 wrongly test positive
+healthy_and_positive = 9
+
+# Total positive test results
+total_positive = sick_and_positive + healthy_and_positive
+
+# Bayes result:
+# Actual sick positive people / All positive people
+posterior_probability = sick_and_positive / total_positive
+
+print("Total people:", total_people)
+print("People with disease:", diseased_people)
+print("Sick people who tested positive:", sick_and_positive)
+print("Healthy people who tested positive:", healthy_and_positive)
+print("Total positive results:", total_positive)
+
+print(
+    "Probability of disease after positive test:",
+    posterior_probability * 100,
+    "%"
+)
+
+1. BAYES THEOREM
+--------------------------------------------------
+Total people: 100
+People with disease: 10
+Sick people who tested positive: 9
+Healthy people who tested positive: 9
+Total positive results: 18
+Probability of disease after positive test: 50.0 %
