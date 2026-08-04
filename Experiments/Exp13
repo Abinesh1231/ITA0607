@@ -1,0 +1,106 @@
+#13
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+# Sample Car Dataset
+data = {
+'Year': [2014, 2013, 2017, 2011, 2018, 2015, 2016, 2012, 2019, 2020],
+'Present_Price': [5.59, 9.54, 9.85, 4.15, 6.87, 5.70, 8.12, 3.95, 10.00, 12.50],
+'Kms_Driven': [27000, 43000, 6900, 5200, 15000, 35000, 18000, 60000, 10000, 5000],
+'Fuel_Type': ['Petrol', 'Diesel', 'Petrol', 'Petrol', 'Diesel',
+'Petrol', 'Diesel', 'Petrol', 'Diesel', 'Petrol'],
+'Seller_Type': ['Dealer', 'Dealer', 'Dealer', 'Individual', 'Dealer',
+'Dealer', 'Dealer', 'Individual', 'Dealer', 'Dealer'],
+'Transmission': ['Manual', 'Manual', 'Manual', 'Manual', 'Automatic',
+'Manual', 'Manual', 'Manual', 'Automatic', 'Automatic'],
+'Owner': [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+'Selling_Price': [3.35, 4.75, 7.25, 2.85, 6.75, 4.60, 6.10, 1.95, 8.75, 11.25]
+
+}
+df = pd.DataFrame(data)
+print("Car Dataset:")
+print(df)
+# Convert categorical columns into numbers
+le = LabelEncoder()
+df['Fuel_Type'] = le.fit_transform(df['Fuel_Type'])
+df['Seller_Type'] = le.fit_transform(df['Seller_Type'])
+df['Transmission'] = le.fit_transform(df['Transmission'])
+# Features and target
+X = df.drop('Selling_Price', axis=1)
+y = df['Selling_Price']
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+X, y, test_size=0.3, random_state=42
+)
+# Create Linear Regression model
+model = LinearRegression()
+# Train model
+model.fit(X_train, y_train)
+# Predict test data
+y_pred = model.predict(X_test)
+print("\nActual Prices:")
+print(y_test.values)
+print("\nPredicted Prices:")
+print(y_pred)
+
+print("\nMean Squared Error:")
+print(mean_squared_error(y_test, y_pred))
+print("\nR2 Score:")
+print(r2_score(y_test, y_pred))
+# Predict new car price
+new_car = pd.DataFrame({
+'Year': [2017],
+'Present_Price': [8.50],
+'Kms_Driven': [25000],
+'Fuel_Type': [1], # Petrol=1, Diesel=0
+'Seller_Type': [0], # Dealer=0
+'Transmission': [1], # Manual=1, Automatic=0
+'Owner': [0]
+})
+prediction = model.predict(new_car)
+print("\nPredicted Selling Price of New Car:")
+print(prediction[0])
+
+#Output
+
+Car Dataset:
+   Year  Present_Price  Kms_Driven Fuel_Type Seller_Type Transmission  Owner  \
+0  2014           5.59       27000    Petrol      Dealer       Manual      0   
+1  2013           9.54       43000    Diesel      Dealer       Manual      0   
+2  2017           9.85        6900    Petrol      Dealer       Manual      0   
+3  2011           4.15        5200    Petrol  Individual       Manual      0   
+4  2018           6.87       15000    Diesel      Dealer    Automatic      0   
+5  2015           5.70       35000    Petrol      Dealer       Manual      0   
+6  2016           8.12       18000    Diesel      Dealer       Manual      0   
+7  2012           3.95       60000    Petrol  Individual       Manual      1   
+8  2019          10.00       10000    Diesel      Dealer    Automatic      0   
+9  2020          12.50        5000    Petrol      Dealer    Automatic      0   
+
+   Selling_Price  
+0           3.35  
+1           4.75  
+2           7.25  
+3           2.85  
+4           6.75  
+5           4.60  
+6           6.10  
+7           1.95  
+8           8.75  
+9          11.25  
+
+Actual Prices:
+[8.75 4.75 4.6 ]
+
+Predicted Prices:
+[9.49922689 7.0210582  3.38437669]
+
+Mean Squared Error:
+2.3989287772437646
+
+R2 Score:
+0.3505682359695028
+
+Predicted Selling Price of New Car:
+5.917073476256633
