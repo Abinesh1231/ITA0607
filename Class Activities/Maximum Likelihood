@@ -1,0 +1,61 @@
+print("\n3. MAXIMUM LIKELIHOOD")
+print("-" * 50)
+
+# Actual student marks
+actual_marks = [50, 60, 70]
+
+# Predictions from two different models
+model1_predictions = [49, 61, 69]
+model2_predictions = [30, 80, 90]
+
+
+# Function to calculate squared prediction error
+def squared_error(actual, predicted):
+
+    total_error = 0
+
+    for actual_value, predicted_value in zip(actual, predicted):
+
+        error = actual_value - predicted_value
+        total_error += error ** 2
+
+    return total_error
+
+
+model1_error = squared_error(
+    actual_marks,
+    model1_predictions
+)
+
+model2_error = squared_error(
+    actual_marks,
+    model2_predictions
+)
+
+print("Actual marks:", actual_marks)
+
+print("\nModel 1 predictions:", model1_predictions)
+print("Model 1 squared error:", model1_error)
+
+print("\nModel 2 predictions:", model2_predictions)
+print("Model 2 squared error:", model2_error)
+
+# Smaller error means greater likelihood
+if model1_error < model2_error:
+    selected_model = "Model 1"
+else:
+    selected_model = "Model 2"
+print("\nMaximum Likelihood selects:", selected_model)
+
+
+3. MAXIMUM LIKELIHOOD
+--------------------------------------------------
+Actual marks: [50, 60, 70]
+
+Model 1 predictions: [49, 61, 69]
+Model 1 squared error: 3
+
+Model 2 predictions: [30, 80, 90]
+Model 2 squared error: 1200
+
+Maximum Likelihood selects: Model 1
