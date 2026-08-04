@@ -1,0 +1,123 @@
+#11
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import numpy as np # Import numpy
+# Sample dataset
+data = {
+'Age': [23, 35, 45, 31, 52, 28, 40, 60, 25, 48],
+'Annual_Income': [25000, 50000, 90000, 45000, 120000, 30000, 70000, 150000, 28000,
+85000],
+'Monthly_Inhand_Salary': [1800, 3500, 7000, 3200, 9000, 2200, 5200, 11000, 2000, 6500],
+'Num_Bank_Accounts': [8, 5, 2, 6, 1, 7, 3, 1, 9, 2],
+'Num_Credit_Card': [7, 5, 2, 6, 1, 8, 3, 1, 9, 2],
+'Interest_Rate': [25, 15, 5, 18, 3, 26, 8, 2, 28, 6],
+'Num_of_Loan': [6, 3, 1, 4, 0, 5, 2, 0, 7, 1],
+'Delay_from_due_date': [30, 15, 2, 18, 1, 28, 5, 0, 35, 3],
+'Credit_Score': ['Poor', 'Standard', 'Good', 'Standard', 'Good',
+'Poor', 'Standard', 'Good', 'Poor', 'Good']
+}
+
+df = pd.DataFrame(data)
+print("Credit Score Dataset:")
+print(df)
+# Features and target
+X = df.drop('Credit_Score', axis=1)
+y = df['Credit_Score']
+# Convert target labels into numbers
+le = LabelEncoder()
+y = le.fit_transform(y)
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+X, y, test_size=0.3, random_state=42
+)
+# Create Random Forest model
+model = RandomForestClassifier(random_state=42)
+# Train model
+model.fit(X_train, y_train)
+# Predict test data
+y_pred = model.predict(X_test)
+print("\nPredicted Values:")
+print(le.inverse_transform(y_pred))
+print("\nActual Values:")
+print(le.inverse_transform(y_test))
+print("\nAccuracy:")
+print(accuracy_score(y_test, y_pred))
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, labels=np.unique(y_test), target_names=le.inverse_transform(np.unique(y_test))))
+# Predict new customer credit score
+new_customer = [[30, 40000, 3000, 6, 6, 20, 4, 20]]
+prediction = model.predict(new_customer)
+print("\nNew Customer Credit Score Prediction:")
+print(le.inverse_transform(prediction)[0])
+
+#Output
+
+Credit Score Dataset:
+   Age  Annual_Income  Monthly_Inhand_Salary  Num_Bank_Accounts  \
+0   23          25000                   1800                  8   
+1   35          50000                   3500                  5   
+2   45          90000                   7000                  2   
+3   31          45000                   3200                  6   
+4   52         120000                   9000                  1   
+5   28          30000                   2200                  7   
+6   40          70000                   5200                  3   
+7   60         150000                  11000                  1   
+8   25          28000                   2000                  9   
+9   48          85000                   6500                  2   
+
+   Num_Credit_Card  Interest_Rate  Num_of_Loan  Delay_from_due_date  \
+0                7             25            6                   30   
+1                5             15            3                   15   
+2                2              5            1                    2   
+3                6             18            4                   18   
+4                1              3            0                    1   
+5                8             26            5                   28   
+6                3              8            2                    5   
+7                1              2            0                    0   
+8                9             28            7                   35   
+9                2              6            1                    3   
+
+  Credit_Score  
+0         Poor  
+1     Standard  
+2         Good  
+3     Standard  
+4         Good  
+5         Poor  
+6     Standard  
+7         Good  
+8         Poor  
+9         Good  
+
+Predicted Values:
+['Poor' 'Standard' 'Poor']
+
+Actual Values:
+['Poor' 'Standard' 'Poor']
+
+Accuracy:
+1.0
+
+Confusion Matrix:
+[[2 0]
+ [0 1]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+        Poor       1.00      1.00      1.00         2
+    Standard       1.00      1.00      1.00         1
+
+    accuracy                           1.00         3
+   macro avg       1.00      1.00      1.00         3
+weighted avg       1.00      1.00      1.00         3
+
+
+New Customer Credit Score Prediction:
+Standard
