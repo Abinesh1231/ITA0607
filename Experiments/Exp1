@@ -1,0 +1,40 @@
+#1
+import pandas as pd
+
+data = pd.DataFrame([
+    ['Sunny','Warm','Normal','Strong','Warm','Same','Yes'],
+    ['Sunny','Warm','High','Strong','Warm','Same','Yes'],
+    ['Rainy','Cold','High','Strong','Warm','Change','No'],
+    ['Sunny','Warm','High','Strong','Cool','Change','Yes']
+], columns=['Sky','Temp','Humidity','Wind','Water','Forecast','EnjoySport'])
+
+print("Training Data:\n")
+print(data)
+
+# Initial hypothesis
+h = ['0'] * 6
+
+# FIND-S
+for _, row in data.iterrows():
+    if row['EnjoySport'] == 'Yes':
+        for i in range(6):
+            if h[i] == '0':
+                h[i] = row.iloc[i]
+            elif h[i] != row.iloc[i]:
+                h[i] = '?'
+
+print("\nMost Specific Hypothesis:")
+print(h)
+
+#Output
+
+Training Data:
+
+     Sky  Temp Humidity    Wind Water Forecast EnjoySport
+0  Sunny  Warm   Normal  Strong  Warm     Same        Yes
+1  Sunny  Warm     High  Strong  Warm     Same        Yes
+2  Rainy  Cold     High  Strong  Warm   Change         No
+3  Sunny  Warm     High  Strong  Cool   Change        Yes
+
+Most Specific Hypothesis:
+['Sunny', 'Warm', '?', 'Strong', '?', '?']
