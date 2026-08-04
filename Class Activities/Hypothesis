@@ -1,0 +1,122 @@
+data = [
+    ("Sunny", "Yes"),
+    ("Rainy", "No"),
+    ("Cloudy", "Yes"),
+    ("Sunny", "Yes"),
+    ("Rainy", "No")
+]
+
+
+# Hypothesis 1
+def always_yes(weather):
+    return "Yes"
+
+
+# Hypothesis 2
+def always_no(weather):
+    return "No"
+
+
+# Hypothesis 3
+def sunny_only(weather):
+    if weather == "Sunny":
+        return "Yes"
+    else:
+        return "No"
+
+
+# Hypothesis 4
+def not_rainy(weather):
+    if weather != "Rainy":
+        return "Yes"
+    else:
+        return "No"
+
+
+# Store all possible hypotheses
+hypotheses = {
+    "Always Yes": always_yes,
+    "Always No": always_no,
+    "Sunny Only": sunny_only,
+    "Not Rainy": not_rainy
+}
+
+
+best_hypothesis = None
+best_accuracy = 0
+
+
+# Search through all hypotheses
+for name, rule in hypotheses.items():
+
+    correct = 0
+
+    print("\nTesting Hypothesis:", name)
+
+    for weather, actual_answer in data:
+
+        predicted_answer = rule(weather)
+
+        print(
+            "Weather:", weather,
+            "| Actual:", actual_answer,
+            "| Predicted:", predicted_answer
+        )
+
+        if predicted_answer == actual_answer:
+            correct += 1
+
+    # Calculate accuracy
+    accuracy = correct / len(data)
+
+    print("Correct Predictions:", correct)
+    print("Accuracy:", accuracy * 100, "%")
+
+    # Store the best hypothesis
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_hypothesis = name
+
+
+print("\nBest Hypothesis:", best_hypothesis)
+print("Best Accuracy:", best_accuracy * 100, "%")
+#Output
+
+Testing Hypothesis: Always Yes
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: Yes
+Weather: Cloudy | Actual: Yes | Predicted: Yes
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: Yes
+Correct Predictions: 3
+Accuracy: 60.0 %
+
+Testing Hypothesis: Always No
+Weather: Sunny | Actual: Yes | Predicted: No
+Weather: Rainy | Actual: No | Predicted: No
+Weather: Cloudy | Actual: Yes | Predicted: No
+Weather: Sunny | Actual: Yes | Predicted: No
+Weather: Rainy | Actual: No | Predicted: No
+Correct Predictions: 2
+Accuracy: 40.0 %
+
+Testing Hypothesis: Sunny Only
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: No
+Weather: Cloudy | Actual: Yes | Predicted: No
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: No
+Correct Predictions: 4
+Accuracy: 80.0 %
+
+Testing Hypothesis: Not Rainy
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: No
+Weather: Cloudy | Actual: Yes | Predicted: Yes
+Weather: Sunny | Actual: Yes | Predicted: Yes
+Weather: Rainy | Actual: No | Predicted: No
+Correct Predictions: 5
+Accuracy: 100.0 %
+
+Best Hypothesis: Not Rainy
+Best Accuracy: 100.0 %
