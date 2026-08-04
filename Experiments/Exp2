@@ -1,0 +1,46 @@
+#2
+import pandas as pd
+
+data = pd.DataFrame([
+    ['Sunny','Warm','Normal','Strong','Warm','Same','Yes'],
+    ['Sunny','Warm','High','Strong','Warm','Same','Yes'],
+    ['Rainy','Cold','High','Strong','Warm','Change','No'],
+    ['Sunny','Warm','High','Strong','Cool','Change','Yes']
+], columns=['Sky','Temp','Humidity','Wind','Water','Forecast','EnjoySport'])
+
+X = data.iloc[:, :-1].values
+Y = data.iloc[:, -1].values
+
+# Specific hypothesis
+S = X[0].copy()
+
+# General hypothesis
+G = [['?' for _ in range(6)] for _ in range(6)]
+
+for i in range(len(X)):
+    if Y[i] == 'Yes':
+        for j in range(6):
+            if S[j] != X[i][j]:
+                S[j] = '?'
+                G[j][j] = '?'
+    else:
+        for j in range(6):
+            if S[j] != X[i][j]:
+                G[j][j] = S[j]
+
+print("Specific Hypothesis:")
+print(S)
+
+print("\nGeneral Hypothesis:")
+for g in G:
+    if g != ['?'] * 6:
+        print(g)
+
+#Output
+
+Specific Hypothesis:
+['Sunny' 'Warm' '?' 'Strong' '?' '?']
+
+General Hypothesis:
+['Sunny', '?', '?', '?', '?', '?']
+['?', 'Warm', '?', '?', '?', '?']
