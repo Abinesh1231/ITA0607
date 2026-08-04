@@ -1,0 +1,46 @@
+#9
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import mean_squared_error, r2_score
+# Dataset
+X = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).reshape(-1, 1)
+y = np.array([2, 4, 5, 4, 5, 7, 9, 10, 12, 15])
+# Linear Regression
+linear_model = LinearRegression()
+linear_model.fit(X, y)
+linear_pred = linear_model.predict(X)
+# Polynomial Regression
+poly = PolynomialFeatures(degree=2)
+X_poly = poly.fit_transform(X)
+poly_model = LinearRegression()
+poly_model.fit(X_poly, y)
+poly_pred = poly_model.predict(X_poly)
+# Evaluation
+print("Linear Regression")
+
+print("Mean Squared Error:", mean_squared_error(y, linear_pred))
+print("R2 Score:", r2_score(y, linear_pred))
+print("\nPolynomial Regression")
+print("Mean Squared Error:", mean_squared_error(y, poly_pred))
+print("R2 Score:", r2_score(y, poly_pred))
+# Plotting
+plt.scatter(X, y, label="Actual Data")
+plt.plot(X, linear_pred, label="Linear Regression")
+plt.plot(X, poly_pred, label="Polynomial Regression")
+plt.xlabel("X values")
+plt.ylabel("Y values")
+plt.title("Linear vs Polynomial Regression")
+plt.legend()
+plt.show()
+
+#Output
+
+Linear Regression
+Mean Squared Error: 1.2024242424242426
+R2 Score: 0.9209451517143825
+
+Polynomial Regression
+Mean Squared Error: 0.42666666666666647
+R2 Score: 0.9719482796405874
