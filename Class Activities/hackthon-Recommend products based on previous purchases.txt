@@ -1,0 +1,208 @@
+# ============================================
+# PRODUCT RECOMMENDATION SYSTEM USING KNN
+# ============================================
+
+# Import Libraries
+import pandas as pd
+from sklearn.neighbors import NearestNeighbors
+
+# --------------------------------------------
+# Step 1: Create Sample Purchase Dataset
+# --------------------------------------------
+
+data = {
+    "Customer": [
+        "A","A","A",
+        "B","B","B",
+        "C","C","C",
+        "D","D","D",
+        "E","E","E",
+        "F","F","F",
+        "G","G","G"
+    ],
+
+    "Product": [
+        "Laptop","Mouse","Keyboard",
+        "Laptop","Headphones","Mouse",
+        "Keyboard","Mouse","Monitor",
+        "Laptop","Keyboard","Monitor",
+        "Mouse","Keyboard","Speaker",
+        "Laptop","Speaker","Headphones",
+        "Laptop","Mouse","Monitor"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+print("Purchase Dataset")
+print(df)
+
+# --------------------------------------------
+# Step 2: Create Customer-Product Matrix
+# --------------------------------------------
+
+customer_product_matrix = pd.crosstab(df["Customer"], df["Product"])
+
+print("\nCustomer Product Matrix")
+print(customer_product_matrix)
+
+# --------------------------------------------
+# Step 3: Train KNN Model
+# --------------------------------------------
+
+model = NearestNeighbors(
+    metric="cosine",
+    algorithm="brute"
+)
+
+model.fit(customer_product_matrix)
+
+# --------------------------------------------
+# Step 4: Recommendation Function
+# --------------------------------------------
+
+def recommend_products(customer_name, n_neighbors=3):
+
+    if customer_name not in customer_product_matrix.index:
+        print("Customer Not Found")
+        return
+
+    distance, index = model.kneighbors(
+        customer_product_matrix.loc[[customer_name]],
+        n_neighbors=n_neighbors
+    )
+
+    similar_customers = customer_product_matrix.iloc[index[0]]
+
+    scores = similar_customers.sum(axis=0)
+
+    purchased = customer_product_matrix.loc[customer_name]
+
+    recommendations = scores[purchased == 0]
+
+    recommendations = recommendations.sort_values(
+        ascending=False
+    )
+
+    print("\n==============================")
+    print("Customer :", customer_name)
+    print("==============================")
+
+    print("\nPreviously Purchased Products:")
+
+    bought = purchased[purchased == 1].index.tolist()
+
+    for item in bought:
+        print("-", item)
+
+    print("\nRecommended Products:")
+
+    if len(recommendations) == 0:
+        print("No Recommendation Available")
+
+    else:
+        for product in recommendations.index:
+            print("-", product)
+
+# --------------------------------------------
+# Step 5: Test Recommendation
+# --------------------------------------------
+
+recommend_products("A")
+
+recommend_products("B")
+
+recommend_products("C")
+
+recommend_products("D")
+output:
+Purchase Dataset
+   Customer     Product
+0         A      Laptop
+1         A       Mouse
+2         A    Keyboard
+3         B      Laptop
+4         B  Headphones
+5         B       Mouse
+6         C    Keyboard
+7         C       Mouse
+8         C     Monitor
+9         D      Laptop
+10        D    Keyboard
+11        D     Monitor
+12        E       Mouse
+13        E    Keyboard
+14        E     Speaker
+15        F      Laptop
+16        F     Speaker
+17        F  Headphones
+18        G      Laptop
+19        G       Mouse
+20        G     Monitor
+
+Customer Product Matrix
+Product   Headphones  Keyboard  Laptop  Monitor  Mouse  Speaker
+Customer                                                       
+A                  0         1       1        0      1        0
+B                  1         0       1        0      1        0
+C                  0         1       0        1      1        0
+D                  0         1       1        1      0        0
+E                  0         1       0        0      1        1
+F                  1         0       1        0      0        1
+G                  0         0       1        1      1        0
+
+==============================
+Customer : A
+==============================
+
+Previously Purchased Products:
+- Keyboard
+- Laptop
+- Mouse
+
+Recommended Products:
+- Headphones
+- Monitor
+- Speaker
+
+==============================
+Customer : B
+==============================
+
+Previously Purchased Products:
+- Headphones
+- Laptop
+- Mouse
+
+Recommended Products:
+- Keyboard
+- Monitor
+- Speaker
+
+==============================
+Customer : C
+==============================
+
+Previously Purchased Products:
+- Keyboard
+- Monitor
+- Mouse
+
+Recommended Products:
+- Laptop
+- Headphones
+- Speaker
+
+==============================
+Customer : D
+==============================
+
+Previously Purchased Products:
+- Keyboard
+- Laptop
+- Monitor
+
+Recommended Products:
+- Mouse
+- Headphones
+- Speaker

@@ -1,0 +1,16 @@
+
+import numpy as np# Input valuesx = np.array([-3, -2, -1, 0, 1, 2, 3])
+# Apply Tanh activation function
+output = np.tanh(x)
+print("Input Values:")
+print(x)
+print("\nTanh Output:")
+print(output)
+OUTPUT:
+Input Values:
+[-3 -2 -1  0  1  2  3]
+
+Tanh Output:
+[-0.99505475 -0.96402758 -0.76159416  0.      0.76159416  0.96402758
+  0.99505475]
+
