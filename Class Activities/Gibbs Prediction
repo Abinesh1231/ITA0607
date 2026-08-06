@@ -1,0 +1,231 @@
+import pandas as pd
+import numpy as np
+
+data = {
+    "Study_Hours": [
+        2, 3, 4, 5, 6, 7, 8, 2, 4, 6,
+        7, 8, 3, 5, 6, 9, 1, 4, 7, 8
+    ],
+
+    "Attendance": [
+        45, 50, 55, 65, 70, 80, 90, 40, 60, 75,
+        85, 92, 48, 68, 78, 95, 35, 58, 82, 88
+    ],
+
+    # 1 = Project completed
+    # 0 = Project not completed
+    "Project_Done": [
+        0, 0, 0, 1, 1, 1, 1, 0, 0, 1,
+        1, 1, 0, 1, 1, 1, 0, 1, 1, 1
+    ],
+
+    # 1 = Placed
+    # 0 = Not placed
+    "Placed": [
+        0, 0, 0, 0, 1, 1, 1, 0, 0, 1,
+        1, 1, 0, 1, 1, 1, 0, 0, 1, 1
+    ]
+}
+
+df = pd.DataFrame(data)
+
+print("Student Placement Dataset")
+print(df)
+
+# Actual placement results
+actual = df["Placed"].to_numpy()
+
+# Candidate Rule 1
+rule1_prediction = (
+    df["Study_Hours"] >= 6
+).astype(int).to_numpy()
+
+# Candidate Rule 2
+rule2_prediction = (
+    df["Attendance"] >= 70
+).astype(int).to_numpy()
+
+# Candidate Rule 3
+rule3_prediction = (
+    (df["Study_Hours"] >= 5) &
+    (df["Attendance"] >= 65) &
+    (df["Project_Done"] == 1)
+).astype(int).to_numpy()
+
+# Count prediction errors
+rule1_errors = np.sum(rule1_prediction != actual)
+rule2_errors = np.sum(rule2_prediction != actual)
+rule3_errors = np.sum(rule3_prediction != actual)
+
+# Illustrative description lengths in bits
+rule1_complexity = 3
+rule2_complexity = 3
+rule3_complexity = 7
+
+rule1_mdl = rule1_complexity + rule1_errors
+rule2_mdl = rule2_complexity + rule2_errors
+rule3_mdl = rule3_complexity + rule3_errors
+
+mdl_results = pd.DataFrame({
+    "Rule": [
+        "Study hours >= 6",
+        "Attendance >= 70",
+        "Hours >= 5, Attendance >= 65 and Project = Yes"
+    ],
+    "Rule_Complexity": [
+        rule1_complexity,
+        rule2_complexity,
+        rule3_complexity
+    ],
+    "Errors": [
+        rule1_errors,
+        rule2_errors,
+        rule3_errors
+    ],
+    "MDL_Score": [
+        rule1_mdl,
+        rule2_mdl,
+        rule3_mdl
+    ]
+})
+
+print(mdl_results)
+
+best_index = mdl_results["MDL_Score"].idxmin()
+
+print("\nBest rule selected by MDL:")
+print(mdl_results.loc[best_index, "Rule"])
+
+# Calculate accuracy of each rule
+rule1_accuracy = np.mean(rule1_prediction == actual)
+rule2_accuracy = np.mean(rule2_prediction == actual)
+rule3_accuracy = np.mean(rule3_prediction == actual)
+
+accuracies = np.array([
+    rule1_accuracy,
+    rule2_accuracy,
+    rule3_accuracy
+])
+
+# Convert accuracies into weights
+weights = accuracies / accuracies.sum()
+
+print("Rule accuracies:", accuracies)
+print("Rule weights:", weights)
+
+new_student = {
+    "Study_Hours": 6,
+    "Attendance": 72,
+    "Project_Done": 1
+}
+
+# Prediction from each rule
+h1 = int(new_student["Study_Hours"] >= 6)
+
+h2 = int(new_student["Attendance"] >= 70)
+
+h3 = int(
+    new_student["Study_Hours"] >= 5 and
+    new_student["Attendance"] >= 65 and
+    new_student["Project_Done"] == 1
+)
+
+hypothesis_predictions = np.array([h1, h2, h3])
+
+# Weighted probability for placement
+placed_probability = np.sum(
+    weights * hypothesis_predictions
+)
+
+not_placed_probability = np.sum(
+    weights * (1 - hypothesis_predictions)
+)
+
+print("\nPredictions from three rules:")
+print(hypothesis_predictions)
+
+print("\nPlacement probability:",
+      round(placed_probability, 3))
+
+print("Not-placement probability:",
+      round(not_placed_probability, 3))
+
+if placed_probability > not_placed_probability:
+    print("Bayes Optimal Prediction: Placed")
+else:
+    print("Bayes Optimal Prediction: Not Placed")
+
+np.random.seed(42)
+rule_names = [
+    "Study-hours rule",
+    "Attendance rule",
+    "Combined rule"
+]
+
+# Randomly select one rule using its weight
+selected_rule_index = np.random.choice(
+    [0, 1, 2],
+    p=weights
+)
+
+selected_rule = rule_names[selected_rule_index]
+
+gibbs_prediction = hypothesis_predictions[
+    selected_rule_index
+]
+
+print("Selected rule:", selected_rule)
+
+if gibbs_prediction == 1:
+    print("Gibbs Prediction: Placed")
+else:
+    print("Gibbs Prediction: Not Placed")
+
+
+#Output
+
+Student Placement Dataset
+    Study_Hours  Attendance  Project_Done  Placed
+0             2          45             0       0
+1             3          50             0       0
+2             4          55             0       0
+3             5          65             1       0
+4             6          70             1       1
+5             7          80             1       1
+6             8          90             1       1
+7             2          40             0       0
+8             4          60             0       0
+9             6          75             1       1
+10            7          85             1       1
+11            8          92             1       1
+12            3          48             0       0
+13            5          68             1       1
+14            6          78             1       1
+15            9          95             1       1
+16            1          35             0       0
+17            4          58             1       0
+18            7          82             1       1
+19            8          88             1       1
+                                             Rule  Rule_Complexity  Errors  \
+0                                Study hours >= 6                3       1   
+1                                Attendance >= 70                3       1   
+2  Hours >= 5, Attendance >= 65 and Project = Yes                7       1   
+
+   MDL_Score  
+0          4  
+1          4  
+2          8  
+
+Best rule selected by MDL:
+Study hours >= 6
+Rule accuracies: [0.95 0.95 0.95]
+Rule weights: [0.33333333 0.33333333 0.33333333]
+
+Predictions from three rules:
+[1 1 1]
+
+Placement probability: 1.0
+Not-placement probability: 0.0
+Bayes Optimal Prediction: Placed
+Selected rule: Attendance rule
+Gibbs Prediction: Placed
