@@ -1,0 +1,104 @@
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    ConfusionMatrixDisplay,
+    classification_report
+)
+import matplotlib.pyplot as plt
+
+# Input columns
+X = df[[
+    "Study_Hours",
+    "Attendance",
+    "Project_Done"
+]]
+
+# Output column
+y = df["Placed"]
+
+# Divide data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+
+# Create Naïve Bayes model
+model = GaussianNB()
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Predict testing students
+y_pred = model.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Actual results:   ",
+      y_test.to_numpy())
+
+print("Predicted results:",
+      y_pred)
+
+print(f"\nAccuracy: {accuracy * 100:.2f}%")
+
+# Classification report
+print("\nClassification Report:")
+
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=[
+            "Not Placed",
+            "Placed"
+        ],
+        zero_division=0
+    )
+)
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+
+display = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=[
+        "Not Placed",
+        "Placed"
+    ]
+)
+
+display.plot()
+plt.title(
+    "Naïve Bayes – Student Placement"
+)
+plt.show()
+
+#Output
+
+Actual results:    [0 1 0 1 1 0]
+Predicted results: [0 1 0 1 1 1]
+
+Accuracy: 83.33%
+
+Classification Report:
+              precision    recall  f1-score   support
+
+  Not Placed       1.00      0.67      0.80         3
+      Placed       0.75      1.00      0.86         3
+
+    accuracy                           0.83         6
+   macro avg       0.88      0.83      0.83         6
+weighted avg       0.88      0.83      0.83         6
+
+Confusion Matrix:
+[[2 1]
+ [0 3]]
