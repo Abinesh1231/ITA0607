@@ -1,0 +1,68 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Sample Bank Loan dataset
+data = {
+    'Gender':['Male','Female','Male','Male','Female','Male','Female','Male','Female','Male'],
+    'Married':['Yes','No','Yes','Yes','No','Yes','No','Yes','Yes','No'],
+    'Education':['Graduate','Graduate','Not Graduate','Graduate','Graduate',
+                 'Not Graduate','Graduate','Graduate','Not Graduate','Graduate'],
+    'Income':[50000,30000,40000,80000,35000,60000,25000,70000,45000,55000],
+    'LoanAmount':[200,120,150,300,100,220,90,250,180,200],
+    'Credit_History':[1,1,0,1,1,1,0,1,0,1],
+    'Loan_Status':['Y','Y','N','Y','Y','Y','N','Y','N','Y']
+}
+
+df = pd.DataFrame(data)
+
+# Encode categorical columns
+le = LabelEncoder()
+for col in ['Gender','Married','Education','Loan_Status']:
+    df[col] = le.fit_transform(df[col])
+
+# Features and target
+X = df.drop('Loan_Status', axis=1)
+y = df['Loan_Status']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# Naive Bayes model
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+# Prediction
+y_pred = model.predict(X_test)
+
+# Evaluation
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Naive Bayes - Loan Prediction")
+plt.show()
+
+#Output
+
+Accuracy: 0.6666666666666666
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.50      1.00      0.67         1
+           1       1.00      0.50      0.67         2
+
+    accuracy                           0.67         3
+   macro avg       0.75      0.75      0.67         3
+weighted avg       0.83      0.67      0.67         3
