@@ -1,0 +1,21 @@
+import numpy as np
+from sklearn.neighbors import KNeighborsRegressor
+
+# Training data
+X = np.array([[1], [2], [3], [4], [5], [6], [7], [8], [9]])
+y = np.array([35, 45, 52, 60, 68, 75, 82, 88, 93])
+
+# Create KNN model
+model = KNeighborsRegressor(n_neighbors=3)
+
+# Train
+model.fit(X, y)
+
+# New student
+new_student = np.array([[5.5]])
+
+# Prediction
+prediction = model.predict(new_student)
+
+print("Study Hours:", new_student[0][0])
+print("Predicted Mark:", round(prediction[0], 2))
