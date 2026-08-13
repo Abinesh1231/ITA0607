@@ -1,0 +1,51 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Dataset
+X = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+y = np.array([35, 45, 52, 60, 68, 75, 82, 88, 93])
+
+# RBF centers
+centers = np.array([2, 5, 8])
+
+# Width
+sigma = 1.5
+
+# RBF Gaussian function
+def rbf(x, center):
+    return np.exp(-((x - center) ** 2) / (2 * sigma ** 2))
+
+# Convert original input into RBF features
+features = []
+
+for x in X:
+    features.append([rbf(x, c) for c in centers])
+
+features = np.array(features)
+# Train linear regression using RBF features
+model = LinearRegression()
+model.fit(features, y)
+# New student
+query = 5.5
+
+query_features = np.array(
+    [[rbf(query, c) for c in centers]]
+)
+
+prediction = model.predict(query_features)
+
+print("RBF Centers:", centers)
+
+print("\nActivation of each center:")
+
+for center, activation in zip(centers, query_features[0]):
+    print(
+        "Center:",
+        center,
+        "Activation:",
+        round(activation, 3)
+    )
+print("\nStudent Study Hours:", query)
+print("Predicted Mark:", round(prediction[0], 2))
