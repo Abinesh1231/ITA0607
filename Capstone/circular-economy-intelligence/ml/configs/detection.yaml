@@ -1,0 +1,3 @@
+model: yolov8n.pt
+classes: 12
+note: Bounding-box annotations are required before detector training.

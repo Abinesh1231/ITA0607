@@ -1,0 +1,8 @@
+{
+    "mae": 109.2274,
+    "rmse": 242.0739,
+    "r2_score": 0.7237,
+    "training_samples": 48,
+    "testing_samples": 12,
+    "model": "RandomForestRegressor"
+}

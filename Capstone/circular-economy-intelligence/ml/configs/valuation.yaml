@@ -1,0 +1,6 @@
+features:
+  - weight_kg
+  - rate_per_kg
+  - quality_factor
+target: value
+model: RandomForestRegressor
