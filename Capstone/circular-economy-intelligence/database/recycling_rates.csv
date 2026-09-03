@@ -1,0 +1,13 @@
+material,rate_per_kg,currency,source_note
+paper,12,INR,reference placeholder
+cardboard,8,INR,reference placeholder
+plastic,25,INR,reference placeholder
+metal,45,INR,reference placeholder
+white-glass,4,INR,reference placeholder
+green-glass,4,INR,reference placeholder
+brown-glass,4,INR,reference placeholder
+battery,80,INR,special-recycling reference placeholder
+clothes,15,INR,reference placeholder
+shoes,10,INR,reference placeholder
+biological,0,INR,not normally valued as recyclable material
+trash,0,INR,general waste

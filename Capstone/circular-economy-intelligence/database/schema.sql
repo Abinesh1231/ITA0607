@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS waste_analyses (
+  id INTEGER PRIMARY KEY,
+  material VARCHAR(80) NOT NULL,
+  confidence FLOAT,
+  weight_kg FLOAT,
+  estimated_value FLOAT,
+  recommendation VARCHAR(255),
+  image_path VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

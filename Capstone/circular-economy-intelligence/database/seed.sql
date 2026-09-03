@@ -1,0 +1,2 @@
+-- Reference material rates are stored in recycling_rates.csv.
+-- Replace the sample/reference values with documented local market data.
